@@ -10,21 +10,21 @@ const dashboardHTML = `<!DOCTYPE html>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #ffffff;
-    --bg2: #f7f7f5;
-    --bg3: #f0f0ed;
-    --border: rgba(0,0,0,0.09);
-    --border2: rgba(0,0,0,0.15);
-    --text: #1a1a18;
-    --muted: #6b6b67;
-    --hint: #a8a8a4;
-    --accent: #1a1a18;
+    --bg: #1e1e24;
+    --bg2: #2b2b36;
+    --bg3: #393946;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #ffffff;
+    --muted: #a0a0b0;
+    --hint: #707080;
+    --accent: #6c5ce7;
     --accent-text: #ffffff;
-    --success: #3b6d11;
-    --success-bg: #eaf3de;
-    --danger: #a32d2d;
-    --radius: 10px;
-    --radius-sm: 7px;
+    --success: #00b894;
+    --success-bg: rgba(0, 184, 148, 0.15);
+    --danger: #d63031;
+    --radius: 12px;
+    --radius-sm: 8px;
   }
 
   body {
