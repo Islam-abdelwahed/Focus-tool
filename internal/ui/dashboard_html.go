@@ -113,6 +113,99 @@ const dashboardHTML = `<!DOCTYPE html>
   .logo-name { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
   .logo-tag { font-size: 13px; color: var(--muted); margin-top: 2px; font-weight: 400; }
 
+  .extension-card {
+    background: linear-gradient(145deg, #0f172a, #172554);
+    border: 1px solid rgba(191, 219, 254, 0.3);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 22px;
+    color: #e2e8f0;
+    box-shadow: 0 16px 30px -16px rgba(15, 23, 42, 0.7);
+  }
+
+  .extension-card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .extension-card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #eff6ff;
+    margin-bottom: 4px;
+    letter-spacing: 0.01em;
+  }
+
+  .extension-card-sub {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #bfdbfe;
+  }
+
+  .extension-pill {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 700;
+    color: #dbeafe;
+    border: 1px solid rgba(147, 197, 253, 0.4);
+    border-radius: 999px;
+    padding: 5px 10px;
+    background: rgba(30, 64, 175, 0.35);
+    white-space: nowrap;
+  }
+
+  .extension-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .extension-btn {
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 999px;
+    border: 1px solid rgba(147, 197, 253, 0.45);
+    background: rgba(30, 64, 175, 0.28);
+    color: #dbeafe;
+    padding: 7px 12px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .extension-btn:hover { background: rgba(59, 130, 246, 0.35); }
+
+  .extension-btn.primary {
+    background: linear-gradient(135deg, #38bdf8, #60a5fa);
+    border-color: rgba(191, 219, 254, 0.8);
+    color: #082f49;
+  }
+
+  .extension-btn.primary:hover {
+    filter: brightness(1.05);
+  }
+
+  .extension-help {
+    display: none;
+    margin-top: 12px;
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(147, 197, 253, 0.25);
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 12px;
+    color: #cbd5e1;
+    line-height: 1.65;
+  }
+
+  .extension-help strong {
+    color: #eff6ff;
+    font-weight: 600;
+  }
+
   .section-label {
     font-size: 11px;
     font-weight: 600;
@@ -485,6 +578,26 @@ const dashboardHTML = `<!DOCTYPE html>
     </div>
   </div>
 
+  <div class="extension-card" id="extension-card">
+    <div class="extension-card-head">
+      <div>
+        <div class="extension-card-title">Browser extension needed for full blocking</div>
+        <div class="extension-card-sub">Install the Focus Redirect extension in Brave/Chrome so blocked websites always route to this localhost page.</div>
+      </div>
+      <div class="extension-pill">Recommended</div>
+    </div>
+    <div class="extension-actions">
+      <button class="extension-btn primary" onclick="toggleExtensionHelp()">Install steps</button>
+      <button class="extension-btn" onclick="dismissExtensionCard()">I've installed it</button>
+    </div>
+    <div class="extension-help" id="extension-help">
+      <strong>1)</strong> Open <strong>brave://extensions</strong> in your browser.<br>
+      <strong>2)</strong> Enable <strong>Developer mode</strong>.<br>
+      <strong>3)</strong> Click <strong>Load unpacked</strong>.<br>
+      <strong>4)</strong> Select the <strong>brave-extension</strong> folder from this Focus project.
+    </div>
+  </div>
+
   <div id="active-banner" class="active-banner">
     <div class="active-banner-title">Session active</div>
     <div class="active-banner-sub" id="banner-sub">--:-- remaining</div>
@@ -549,8 +662,11 @@ let sessionActive = false;
 let sessionEndMs = 0;
 let timerInterval = null;
 let stopModalResolver = null;
+const EXTENSION_CARD_KEY = 'focus.extensionInstalled';
 
 async function init() {
+  initExtensionCard();
+
   const sitesJSON = await bridge_getSites();
   sites = JSON.parse(sitesJSON);
   renderSites();
@@ -560,6 +676,29 @@ async function init() {
   if (status.active) {
     setActiveState(status.end_ms);
   }
+}
+
+function initExtensionCard() {
+  try {
+    if (localStorage.getItem(EXTENSION_CARD_KEY) === '1') {
+      const card = document.getElementById('extension-card');
+      if (card) card.style.display = 'none';
+    }
+  } catch (_e) {}
+}
+
+function toggleExtensionHelp() {
+  const help = document.getElementById('extension-help');
+  if (!help) return;
+  help.style.display = help.style.display === 'block' ? 'none' : 'block';
+}
+
+function dismissExtensionCard() {
+  const card = document.getElementById('extension-card');
+  if (card) card.style.display = 'none';
+  try {
+    localStorage.setItem(EXTENSION_CARD_KEY, '1');
+  } catch (_e) {}
 }
 
 function renderSites() {

@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"net"
 	"net/http"
 	"strings"
@@ -24,6 +25,7 @@ func Start(endTime time.Time) error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handleBlocked(endTime))
 	mux.HandleFunc("/api/status", handleStatus)
+	mux.HandleFunc("/api/sites", handleSites)
 	mux.HandleFunc("/api/stop-request", handleStopRequest)
 	mux.HandleFunc("/api/stop-confirm", handleStopConfirm)
 	mux.HandleFunc("/api/cancel-stop", handleCancelStop)
@@ -54,11 +56,15 @@ func Stop() {
 
 func handleBlocked(endTime time.Time) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		host := r.Host
+		host := strings.TrimSpace(r.URL.Query().Get("site"))
+		if host == "" {
+			host = r.Host
+		}
 		if host == "" {
 			host = "this site"
 		}
 		host = strings.Split(host, ":")[0]
+		host = html.EscapeString(host)
 
 		html := strings.ReplaceAll(blockedHTML, "{{END_TIME_MS}}", fmt.Sprintf("%d", endTime.UnixMilli()))
 		html = strings.ReplaceAll(html, "{{SITE}}", host)
@@ -83,6 +89,25 @@ func handleStatus(w http.ResponseWriter, r *http.Request) {
 		"remaining": int(rem.Seconds()),
 		"stopping":  s.Stopping,
 		"stop_at":   s.StopAt.UnixMilli(),
+	})
+}
+
+func handleSites(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	s, err := session.Load()
+	if err != nil || s.Remaining() <= 0 || s.Stopping {
+		json.NewEncoder(w).Encode(map[string]any{
+			"active": false,
+			"sites":  []string{},
+		})
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]any{
+		"active": true,
+		"sites":  s.Sites,
 	})
 }
 

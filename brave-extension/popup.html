@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Focus Redirect</title>
+  <style>
+    :root {
+      --bg: #0a1220;
+      --card: rgba(20, 32, 52, 0.88);
+      --card-border: rgba(153, 180, 221, 0.2);
+      --text: #e6eefc;
+      --muted: #9fb1cc;
+      --accent: #4bb2ff;
+      --good: #2dd4bf;
+      --warn: #f59e0b;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 340px;
+      max-width: 360px;
+      font-family: "Segoe UI", "SF Pro Text", "Helvetica Neue", sans-serif;
+      background:
+        radial-gradient(120% 160% at 10% -20%, rgba(75, 178, 255, 0.45), rgba(10, 18, 32, 0) 60%),
+        radial-gradient(90% 140% at 100% 120%, rgba(45, 212, 191, 0.25), rgba(10, 18, 32, 0) 55%),
+        var(--bg);
+      color: var(--text);
+      padding: 14px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      backdrop-filter: blur(8px);
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #4bb2ff, #2dd4bf);
+      display: grid;
+      place-items: center;
+      color: #03121f;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(153, 180, 221, 0.3);
+      background: rgba(12, 21, 35, 0.6);
+      color: var(--muted);
+    }
+
+    .badge.online {
+      color: var(--good);
+      border-color: rgba(45, 212, 191, 0.45);
+      background: rgba(45, 212, 191, 0.12);
+    }
+
+    .badge.offline {
+      color: #ffd089;
+      border-color: rgba(245, 158, 11, 0.45);
+      background: rgba(245, 158, 11, 0.12);
+    }
+
+    .status {
+      border: 1px solid rgba(153, 180, 221, 0.22);
+      border-radius: 12px;
+      background: rgba(9, 17, 30, 0.65);
+      padding: 10px;
+      margin-bottom: 10px;
+      min-height: 60px;
+    }
+
+    .status-title {
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .status-msg {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .meta-card {
+      border: 1px solid rgba(153, 180, 221, 0.22);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(9, 17, 30, 0.65);
+    }
+
+    .meta-label {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .meta-value {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .list {
+      max-height: 130px;
+      overflow: auto;
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .list li {
+      margin-bottom: 4px;
+      opacity: 0.95;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 12px;
+      padding: 4px 0;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    button {
+      flex: 1;
+      border: 1px solid rgba(153, 180, 221, 0.3);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 9px 10px;
+      cursor: pointer;
+      background: rgba(9, 17, 30, 0.8);
+      color: var(--text);
+    }
+
+    button.primary {
+      border-color: rgba(75, 178, 255, 0.55);
+      background: linear-gradient(135deg, rgba(75, 178, 255, 0.26), rgba(45, 212, 191, 0.2));
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">F</div>
+        <div>
+          <div class="brand-name">Focus Redirect</div>
+          <div class="brand-sub">Brave Extension</div>
+        </div>
+      </div>
+      <div id="api-badge" class="badge">Checking</div>
+    </div>
+
+    <div class="status">
+      <div class="status-title">Sync Status</div>
+      <div class="status-msg" id="status-msg">Loading...</div>
+    </div>
+
+    <div class="meta">
+      <div class="meta-card">
+        <div class="meta-label">Active Domains</div>
+        <div class="meta-value" id="domains-count">0</div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-label">Last Sync</div>
+        <div class="meta-value" id="last-sync">--</div>
+      </div>
+    </div>
+
+    <div id="domains-empty" class="empty">No active domains right now.</div>
+    <ol id="domains-list" class="list" hidden></ol>
+
+    <div class="actions">
+      <button id="sync-btn" class="primary">Sync Now</button>
+      <button id="refresh-btn">Refresh</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
