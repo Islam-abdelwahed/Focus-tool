@@ -10,38 +10,48 @@ const dashboardHTML = `<!DOCTYPE html>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #ffffff;
-    --bg2: #f7f7f5;
-    --bg3: #f0f0ed;
-    --border: rgba(0,0,0,0.09);
-    --border2: rgba(0,0,0,0.15);
-    --text: #1a1a18;
-    --muted: #6b6b67;
-    --hint: #a8a8a4;
-    --accent: #1a1a18;
+    --bg-base: #f0f2f5;
+    --bg-app: #ffffff;
+    --bg-glass: rgba(255, 255, 255, 0.75);
+    --bg-glass-hover: rgba(255, 255, 255, 0.95);
+    --border: rgba(0, 0, 0, 0.06);
+    --border2: rgba(0, 0, 0, 0.12);
+    --text: #0f172a;
+    --muted: #64748b;
+    --hint: #94a3b8;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
     --accent-text: #ffffff;
-    --success: #3b6d11;
-    --success-bg: #eaf3de;
-    --danger: #a32d2d;
-    --radius: 10px;
-    --radius-sm: 7px;
+    --success: #059669;
+    --success-bg: #d1fae5;
+    --success-border: #a7f3d0;
+    --danger: #e11d48;
+    --danger-bg: #ffe4e6;
+    --danger-border: #fecdd3;
+    --radius-lg: 16px;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg-base);
+    background-image: radial-gradient(at 0% 0%, hsla(253,16%,7deg,0.03) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.03) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,0.03) 0, transparent 50%);
     color: var(--text);
     height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     user-select: none;
+    -webkit-font-smoothing: antialiased;
   }
 
   .titlebar {
-    background: var(--bg2);
-    border-bottom: 0.5px solid var(--border);
-    padding: 10px 16px;
+    background: transparent;
+    padding: 12px 16px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -49,157 +59,196 @@ const dashboardHTML = `<!DOCTYPE html>
     flex-shrink: 0;
   }
 
-  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); }
   .titlebar-name {
     font-size: 13px;
+    font-weight: 500;
     color: var(--muted);
     margin: 0 auto;
-    letter-spacing: .01em;
+    letter-spacing: .02em;
   }
 
   .body {
     flex: 1;
     overflow-y: auto;
-    padding: 24px 24px 32px;
+    padding: 16px 28px 40px;
+    background: var(--bg-app);
+    margin: 0 12px 12px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .body::-webkit-scrollbar {
+    width: 6px;
+  }
+  .body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .body::-webkit-scrollbar-thumb {
+    background: var(--border2);
+    border-radius: 10px;
   }
 
   .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 28px;
+    gap: 14px;
+    margin-bottom: 32px;
+    margin-top: 8px;
   }
 
   .logo-mark {
-    width: 32px; height: 32px;
-    background: var(--accent);
-    border-radius: 8px;
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--accent), #4f46e5);
+    border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
   }
 
-  .logo-mark svg { display: block; }
-  .logo-name { font-size: 17px; font-weight: 500; }
-  .logo-tag { font-size: 12px; color: var(--hint); margin-top: 1px; }
+  .logo-mark svg { display: block; width: 22px; height: 22px; }
+  .logo-name { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+  .logo-tag { font-size: 13px; color: var(--muted); margin-top: 2px; font-weight: 400; }
 
   .section-label {
-    font-size: 10px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
     color: var(--hint);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   .pills {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .pill {
-    padding: 6px 14px;
+    padding: 8px 16px;
     border-radius: 999px;
-    border: 0.5px solid var(--border2);
+    border: 1px solid var(--border2);
     font-size: 13px;
-    color: var(--muted);
+    font-weight: 500;
+    color: var(--text);
     cursor: pointer;
-    background: transparent;
+    background: var(--bg-app);
     font-family: inherit;
-    transition: all .12s;
+    transition: all .2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .pill:hover { background: var(--bg2); }
+  .pill:hover { background: var(--bg-base); border-color: var(--hint); }
   .pill.active {
-    background: var(--accent);
-    color: var(--accent-text);
-    border-color: var(--accent);
+    background: var(--text);
+    color: var(--bg-app);
+    border-color: var(--text);
+    box-shadow: var(--shadow-sm);
   }
 
   .custom-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 22px;
+    gap: 12px;
+    margin-bottom: 28px;
+    background: var(--bg-base);
+    padding: 6px 6px 6px 16px;
+    border-radius: 999px;
+    width: max-content;
+    border: 1px solid var(--border);
   }
+  
+  .custom-row span { font-size: 13px; color: var(--muted); font-weight: 500; }
 
   .custom-row input {
-    width: 70px;
+    width: 60px;
     font-size: 14px;
-    padding: 6px 10px;
-    border-radius: var(--radius-sm);
-    border: 0.5px solid var(--border2);
-    background: var(--bg);
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-app);
     color: var(--text);
     font-family: inherit;
     text-align: center;
     outline: none;
+    transition: all .2s;
   }
 
-  .custom-row input:focus { border-color: var(--accent); }
-  .custom-row span { font-size: 13px; color: var(--muted); }
+  .custom-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
 
   .start-btn {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     border-radius: var(--radius);
-    background: var(--accent);
-    color: var(--accent-text);
+    background: var(--text);
+    color: var(--bg-app);
     border: none;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
     font-family: inherit;
     letter-spacing: .01em;
-    transition: opacity .15s;
-    margin-bottom: 22px;
+    transition: all .2s;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-md);
   }
 
-  .start-btn:hover:not(:disabled) { opacity: .85; }
-  .start-btn:disabled { opacity: .5; cursor: not-allowed; }
-  .start-btn.active-state {
-    background: var(--success-bg);
-    color: var(--success);
-  }
+  .start-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+  .start-btn:active:not(:disabled) { transform: translateY(0); box-shadow: var(--shadow-sm); }
+  .start-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; box-shadow: none; }
 
   .divider {
     border: none;
-    border-top: 0.5px solid var(--border);
-    margin-bottom: 20px;
+    border-top: 1px solid var(--border);
+    margin: 8px 0 24px;
   }
 
   .sites-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
 
   .add-btn {
-    font-size: 12px;
-    color: var(--muted);
-    border: 0.5px solid var(--border2);
-    background: transparent;
-    padding: 4px 10px;
-    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    border: 1px solid var(--border2);
+    background: var(--bg-app);
+    padding: 6px 12px;
+    border-radius: 999px;
     cursor: pointer;
     font-family: inherit;
-    transition: background .12s;
+    transition: all .2s;
+    box-shadow: var(--shadow-sm);
   }
 
-  .add-btn:hover { background: var(--bg2); }
+  .add-btn:hover { background: var(--bg-base); border-color: var(--hint); }
 
   .site-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 0.5px solid var(--border);
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: var(--radius-sm);
+    background: rgba(0,0,0,0.02);
+    border: 1px solid transparent;
+    transition: all .2s;
+  }
+  
+  .site-row:hover {
+    background: var(--bg-base);
+    border-color: var(--border);
   }
 
-  .site-row:last-child { border-bottom: none; }
-  .site-name { font-size: 13px; }
+  .site-name { font-size: 13px; font-weight: 500; color: var(--text); }
 
   .site-remove {
     background: none;
@@ -208,153 +257,206 @@ const dashboardHTML = `<!DOCTYPE html>
     line-height: 1;
     color: var(--hint);
     cursor: pointer;
-    padding: 0 2px;
-    transition: color .12s;
+    padding: 2px 6px;
+    border-radius: 6px;
+    transition: all .2s;
     font-family: inherit;
   }
 
-  .site-remove:hover { color: var(--danger); }
+  .site-remove:hover { color: var(--danger); background: var(--danger-bg); }
 
   .add-row {
     display: none;
     gap: 8px;
     margin-top: 12px;
+    animation: fadeIn 0.2s ease;
   }
+  
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
   .add-row input {
     flex: 1;
     font-size: 13px;
-    padding: 7px 10px;
+    padding: 10px 14px;
     border-radius: var(--radius-sm);
-    border: 0.5px solid var(--border2);
-    background: var(--bg);
+    border: 1px solid var(--border2);
+    background: var(--bg-app);
     color: var(--text);
     font-family: inherit;
     outline: none;
+    transition: all .2s;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
   }
 
-  .add-row input:focus { border-color: var(--accent); }
+  .add-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
 
   .add-row button {
     font-size: 13px;
-    padding: 7px 14px;
+    font-weight: 500;
+    padding: 10px 18px;
     border-radius: var(--radius-sm);
-    background: var(--accent);
-    color: var(--accent-text);
+    background: var(--text);
+    color: var(--bg-app);
     border: none;
     cursor: pointer;
     font-family: inherit;
+    transition: all .2s;
   }
+  
+  .add-row button:hover { opacity: 0.9; }
 
   .active-banner {
     background: var(--success-bg);
-    border: 0.5px solid rgba(59,109,17,0.2);
+    border: 1px solid var(--success-border);
     border-radius: var(--radius);
-    padding: 14px 16px;
-    margin-bottom: 20px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
     display: none;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.1);
   }
 
   .active-banner-title {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--success);
-    margin-bottom: 2px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .active-banner-title::before {
+    content: '';
+    display: block;
+    width: 8px; height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--success);
   }
 
   .active-banner-sub {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--success);
-    opacity: .7;
+    opacity: .8;
+    margin-left: 16px;
+    font-variant-numeric: tabular-nums;
   }
 
   .stop-early-btn {
     width: 100%;
-    margin-top: 10px;
-    padding: 9px;
+    margin-top: 16px;
+    padding: 10px;
     border-radius: var(--radius-sm);
-    background: transparent;
-    border: 0.5px solid rgba(163,45,45,0.35);
+    background: var(--bg-glass);
+    border: 1px solid var(--danger-border);
     color: var(--danger);
     font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
     font-family: inherit;
-    transition: background .12s;
+    transition: all .2s;
   }
 
-  .stop-early-btn:hover { background: rgba(163,45,45,0.06); }
+  .stop-early-btn:hover { background: var(--danger-bg); border-color: rgba(225, 29, 72, 0.3); }
 
   .statusbar {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 9px 16px;
-    background: var(--bg2);
-    border-top: 0.5px solid var(--border);
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: transparent;
   }
 
-  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--hint); }
-  .status-dot.on { background: #639922; }
-  .statusbar-text { font-size: 12px; color: var(--muted); }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--hint); transition: background .3s; }
+  .status-dot.on { background: var(--success); box-shadow: 0 0 8px rgba(5, 150, 105, 0.4); }
+  .statusbar-text { font-size: 12px; font-weight: 500; color: var(--muted); }
 
-  .err { font-size: 12px; color: var(--danger); margin-top: 8px; display: none; }
+  .err { font-size: 13px; font-weight: 500; color: var(--danger); margin-top: 12px; display: none; background: var(--danger-bg); padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--danger-border); }
 
   .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.35);
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
     display: none;
     align-items: center;
     justify-content: center;
     padding: 16px;
-    z-index: 10;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .modal.show {
+    display: flex;
+    opacity: 1;
   }
 
   .modal-card {
     width: 100%;
     max-width: 360px;
-    background: var(--bg);
-    border: 0.5px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    background: var(--bg-app);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow-lg), 0 20px 40px rgba(0,0,0,0.1);
+    transform: translateY(10px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .modal.show .modal-card {
+    transform: translateY(0) scale(1);
   }
 
   .modal-title {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 6px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
   }
 
   .modal-text {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--muted);
-    line-height: 1.5;
-    margin-bottom: 14px;
+    line-height: 1.6;
+    margin-bottom: 24px;
   }
 
   .modal-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 12px;
   }
 
   .modal-btn {
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 600;
     border-radius: var(--radius-sm);
-    border: 0.5px solid var(--border2);
-    background: transparent;
+    border: 1px solid var(--border2);
+    background: var(--bg-app);
     color: var(--text);
-    padding: 7px 10px;
+    padding: 8px 16px;
     cursor: pointer;
     font-family: inherit;
+    transition: all .2s;
+  }
+  
+  .modal-btn:hover {
+    background: var(--bg-base);
   }
 
   .modal-btn.danger {
     background: var(--danger);
     border-color: var(--danger);
     color: #fff;
+    box-shadow: 0 2px 8px rgba(225, 29, 72, 0.25);
+  }
+  
+  .modal-btn.danger:hover {
+    background: #be123c;
+    border-color: #be123c;
   }
 </style>
 </head>
@@ -598,7 +700,7 @@ async function stopEarly() {
 
 function showStopModal() {
   const modal = document.getElementById('stop-modal');
-  modal.style.display = 'flex';
+  modal.classList.add('show');
 
   return new Promise(resolve => {
     stopModalResolver = resolve;
@@ -607,7 +709,7 @@ function showStopModal() {
 
 function closeStopModal(confirmed) {
   const modal = document.getElementById('stop-modal');
-  modal.style.display = 'none';
+  modal.classList.remove('show');
   if (stopModalResolver) {
     stopModalResolver(confirmed);
     stopModalResolver = null;

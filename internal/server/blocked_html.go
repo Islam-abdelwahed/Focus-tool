@@ -10,229 +10,259 @@ const blockedHTML = `<!DOCTYPE html>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #ffffff;
-    --bg2: #f7f7f5;
-    --border: rgba(0,0,0,0.10);
-    --text: #1a1a18;
-    --muted: #6b6b67;
-    --hint: #a8a8a4;
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1c1c1a;
-      --bg2: #242422;
-      --border: rgba(255,255,255,0.10);
-      --text: #e8e8e4;
-      --muted: #9a9a96;
-      --hint: #5a5a58;
-    }
+    --bg-base: #0f172a;
+    --bg-card: rgba(30, 41, 59, 0.7);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --hint: #64748b;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.5);
+    --radius-lg: 24px;
+    --radius: 16px;
+    --radius-sm: 10px;
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg-base);
+    background-image: 
+      radial-gradient(ellipse at 10% 0%, rgba(59, 130, 246, 0.15), transparent 50%), 
+      radial-gradient(ellipse at 90% 100%, rgba(139, 92, 246, 0.15), transparent 50%);
     color: var(--text);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
+    -webkit-font-smoothing: antialiased;
   }
 
   .card {
     width: 100%;
     max-width: 480px;
     text-align: center;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 48px 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .site-badge {
     display: inline-block;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .07em;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--hint);
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     border-radius: 999px;
-    padding: 4px 14px;
-    margin-bottom: 28px;
+    padding: 6px 18px;
+    margin-bottom: 32px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
   }
 
   h1 {
-    font-size: 22px;
-    font-weight: 500;
+    font-size: 28px;
+    font-weight: 700;
     color: var(--text);
-    margin-bottom: 6px;
-    letter-spacing: -.01em;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(to right, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .sub {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--muted);
-    line-height: 1.65;
-    margin-bottom: 32px;
+    line-height: 1.6;
+    margin-bottom: 40px;
   }
 
   .timer-card {
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: var(--radius);
-    padding: 28px 24px 20px;
-    margin-bottom: 28px;
+    padding: 32px 24px 24px;
+    margin-bottom: 40px;
+    box-shadow: inset 0 2px 12px rgba(0,0,0,0.2);
   }
 
   .timer-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: .08em;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .1em;
     text-transform: uppercase;
     color: var(--hint);
-    margin-bottom: 10px;
+    margin-bottom: 16px;
   }
 
   .timer-display {
-    font-size: 48px;
-    font-weight: 500;
+    font-size: 56px;
+    font-weight: 700;
     color: var(--text);
-    letter-spacing: .04em;
+    letter-spacing: .02em;
     font-variant-numeric: tabular-nums;
     line-height: 1;
+    text-shadow: 0 0 30px rgba(255,255,255,0.1);
   }
 
   .timer-segments {
     display: flex;
     justify-content: center;
     gap: 0;
-    margin-top: 8px;
+    margin-top: 12px;
   }
 
   .seg-label {
-    font-size: 11px;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--hint);
-    width: 64px;
+    width: 72px;
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .quote-area {
-    min-height: 60px;
-    margin-bottom: 32px;
-    padding: 0 8px;
+    min-height: 80px;
+    margin-bottom: 40px;
+    padding: 0 16px;
   }
 
   .quote-text {
-    font-size: 14px;
-    color: var(--muted);
-    line-height: 1.7;
+    font-size: 16px;
+    color: var(--text);
+    line-height: 1.6;
     font-style: italic;
-    transition: opacity .4s ease;
+    opacity: 0.9;
+    transition: opacity .4s ease, transform .4s ease;
   }
 
   .quote-author {
-    font-size: 12px;
-    color: var(--hint);
-    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: 12px;
     transition: opacity .4s ease;
   }
 
   .stop-area {
-    border-top: 0.5px solid var(--border);
-    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 24px;
   }
 
   .stop-link {
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--hint);
     background: none;
     border: none;
     cursor: pointer;
     text-decoration: underline;
-    text-decoration-color: var(--border);
+    text-decoration-color: transparent;
     font-family: inherit;
-    transition: color .15s;
+    transition: all .2s;
   }
 
-  .stop-link:hover { color: var(--muted); }
+  .stop-link:hover { color: var(--text); text-decoration-color: var(--border); }
 
   .flow-box {
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 16px;
-    margin-top: 14px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 20px;
     text-align: left;
     display: none;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .flow-label {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--muted);
-    margin-bottom: 10px;
+    margin-bottom: 16px;
     line-height: 1.5;
   }
 
   .flow-label strong {
     color: var(--text);
-    font-weight: 500;
-    background: var(--bg);
-    border: 0.5px solid var(--border);
-    border-radius: 4px;
-    padding: 1px 6px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 3px 8px;
     font-style: normal;
-    font-size: 12px;
-    letter-spacing: .04em;
+    font-size: 13px;
+    letter-spacing: .06em;
   }
 
   .confirm-input {
     width: 100%;
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
-    padding: 9px 12px;
+    padding: 14px 16px;
     border-radius: var(--radius-sm);
-    border: 0.5px solid var(--border);
-    background: var(--bg);
+    border: 1px solid var(--border);
+    background: rgba(0,0,0,0.3);
     color: var(--text);
     font-family: inherit;
     outline: none;
-    letter-spacing: .08em;
+    letter-spacing: .1em;
+    font-weight: 600;
+    transition: all 0.2s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
   }
 
   .confirm-input:focus {
-    border-color: rgba(0,0,0,0.3);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .confirm-input:focus { border-color: rgba(255,255,255,0.3); }
+    border-color: rgba(255,255,255,0.3);
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.05), inset 0 2px 4px rgba(0,0,0,0.2);
   }
 
   .confirm-hint {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--hint);
-    margin-top: 6px;
+    margin-top: 12px;
     text-align: center;
   }
 
   .cooldown-display {
-    font-size: 28px;
-    font-weight: 500;
+    font-size: 36px;
+    font-weight: 700;
     color: var(--text);
     font-variant-numeric: tabular-nums;
     text-align: center;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    text-shadow: 0 0 20px rgba(255,255,255,0.1);
   }
 
   .cooldown-sub {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--hint);
     text-align: center;
   }
 
   .done-msg {
-    font-size: 14px;
-    color: var(--muted);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--success, #10b981);
     text-align: center;
   }
 </style>
