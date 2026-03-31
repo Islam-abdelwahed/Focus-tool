@@ -1,223 +1,142 @@
-# 🔥 Focus — Ultimate Website Blocker with Live Timer
+# Focus
 
-Take control of your time. Eliminate distractions. Achieve deep focus.
-
-**Focus** is a powerful, lightweight CLI productivity tool that blocks distracting websites and replaces them with a motivational timer page — helping you stay committed to your goals.
-
-No extensions. No heavy apps. Just pure focus.
+A minimal, beautiful website blocker for Windows. No extensions, no runtime dependencies — just a single `.exe`.
 
 ---
 
-## ✨ Features
+## How it works
 
-* 🚫 Blocks distracting websites (Facebook, Instagram, TikTok, X, WhatsApp, etc.)
-* ⏳ Shows a beautiful live countdown timer page instead of the blocked site
-* ⚡ Instant activation from Command Prompt
-* 🔐 Automatically edits and restores your system hosts file safely
-* 🧠 Smart session tracking with status checking
-* 🛑 Manual stop support anytime
-* 💻 Lightweight and extremely fast
-* 🛡 No browser extensions required
-* 🎯 Works system-wide across all browsers
+- Opens a clean dashboard window (WebView2 — pre-installed on all Windows 10/11 machines)
+- Edits your system `hosts` file to redirect blocked sites to `localhost`
+- Runs a local HTTP server on port 80 that serves a live countdown timer
+- Re-writes the hosts file every 30 seconds so manual edits don't stick
+- Restores everything automatically when the timer ends
 
 ---
 
-## 🖼 Preview
+## Requirements
 
-Instead of distracting websites, you'll see:
-
-<p align="center">
-  <img src="images/prev.png" alt="Focus Timer Preview" width="1000">
-</p>
-
-You see this:
-
-```
-🚨 I Caught You!
-⏳ Focus Time Remaining: 00h 59m 12s
-📚 Stay focused! Your future self will thank you!
-```
+| Tool | Version | Download |
+|------|---------|----------|
+| Go | 1.21+ | https://go.dev/dl/ |
+| Windows | 10 / 11 | — |
+| WebView2 Runtime | any | Pre-installed on Win 10/11. If missing: https://developer.microsoft.com/microsoft-edge/webview2/ |
 
 ---
 
-## 🚀 Installation
+## Build
 
-### 1. Clone or download project
-
-```
-git clone https://github.com/yourusername/focus.git
-```
-
-or place files in:
+**Option A — double-click (simplest):**
 
 ```
-C:\focus\
+build.bat
 ```
+
+**Option B — command line:**
+
+```bat
+go mod tidy
+go build -ldflags="-H windowsgui -s -w" -o dist\focus.exe .\cmd\focus
+```
+
+Output: `dist\focus.exe` (~6–8 MB, no installer needed)
 
 ---
 
-### 2. Install Node.js
+## Run
 
-Download and install:
+Right-click `focus.exe` → **Run as administrator**
 
-https://nodejs.org
-
----
-
-### 3. Add to PATH
-
-Run CMD as Administrator:
-
-```
-setx PATH "%PATH%;C:\focus"
-```
-
-Restart CMD.
+The app needs admin rights to edit the system hosts file. On first launch it will auto-elevate via UAC prompt.
 
 ---
 
-## ⚡ Usage
-
-### Start focus session
-
-```
-focus 60
-```
-
-Blocks distracting websites for 60 minutes.
-
----
-
-### Check remaining time
-
-```
-focus status
-```
-
-Example:
-
-```
-⏳ Remaining: 42m 12s
-```
-
----
-
-### Stop focus session
-
-```
-focus stop
-```
-
-Restores access immediately.
-
----
-
-## 🎯 Example Workflow
-
-```
-focus 90
-```
-
-Now open:
-
-```
-facebook.com
-```
-
-Instead of social media, you'll see your focus timer page.
-
-Your brain stays locked in.
-
----
-
-## 🧠 How It Works
-
-Focus safely:
-
-* Creates backup of hosts file
-* Redirects distracting domains → localhost
-* Runs local server showing timer page
-* Automatically restores system after timer ends
-
-No permanent system changes.
-
----
-
-## 📁 Project Structure
+## Project structure
 
 ```
 focus/
-│
-├── focus.js          # Main CLI logic
-├── focus.cmd         # Command launcher
-├── blocked.html      # Timer page UI
-└── README.md
+├── cmd/
+│   └── focus/
+│       └── main.go              # Entry point
+├── internal/
+│   ├── blocker/
+│   │   ├── blocker.go           # Hosts file editing + 30s guardian loop
+│   │   ├── dns_windows.go       # ipconfig /flushdns
+│   │   └── syscall_windows.go   # Hidden console window helper
+│   ├── server/
+│   │   ├── server.go            # HTTP server + stop API
+│   │   └── blocked_html.go      # Blocked page HTML (embedded)
+│   ├── session/
+│   │   ├── session.go           # State load/save/clear
+│   │   └── recovery.go          # Crash recovery + auto-stop scheduler
+│   ├── tray/
+│   │   └── tray.go              # System tray icon + menu
+│   └── ui/
+│       ├── dashboard.go         # WebView2 window + JS bridge
+│       ├── dashboard_html.go    # Dashboard HTML/CSS/JS (embedded)
+│       └── admin_windows.go     # UAC elevation helper
+├── assets/
+│   └── README.txt               # Put focus.ico here
+├── focus.manifest               # UAC manifest
+├── focus.rc                     # Windows resource file
+├── go.mod
+├── build.bat                    # One-click build for Windows
+└── Makefile                     # For make users
 ```
 
 ---
 
-## 🛡 Safety
+## Anti-cheat system
 
-Focus automatically:
+Stopping early requires three steps:
 
-* Backs up hosts file before editing
-* Restores original state after session
-* Handles crashes safely
+1. **Friction prompt** — click "I need to stop early" (small, muted link)
+2. **Type STOP** — must type the word exactly to proceed
+3. **2-minute cooldown** — a visible countdown before hosts are restored
 
-Your system remains protected.
-
----
-
-## 💡 Why Focus?
-
-Distractions destroy productivity.
-
-Focus enforces discipline at the system level.
-
-Perfect for:
-
-* Students
-* Developers
-* Entrepreneurs
-* Deep work sessions
-* Exam preparation
+Additionally, the hosts file is re-written every 30 seconds by a background goroutine, so manually editing it during a session doesn't stick.
 
 ---
 
-## 🔮 Future Features
+## Data stored
 
-* Custom blocked websites
-* Background service mode
-* Windows installer
-* GUI version
-* Cross-platform support (Linux, macOS)
+All data is in `%APPDATA%\focus\`:
 
----
-
-## 👨‍💻 Author
-
-Built with precision for productivity.
-
-If this helped you, give it a ⭐ on GitHub.
+| File | Contents |
+|------|----------|
+| `session.json` | Active session state (end time, sites, duration) |
+| `sites.json` | Your custom blocked sites list |
+| `hosts.backup` | Backup of your original hosts file (only exists during a session) |
 
 ---
 
-## ⚖ License
+## Adding an icon
 
-MIT License
+Place a `focus.ico` file (multi-size: 16×16, 32×32, 48×48) in the `assets/` folder.
 
-Free to use, modify, and distribute.
+Then install `go-winres` and rebuild:
 
----
-
-## 🧠 Remember
-
-> Discipline beats motivation.
-
-Start your focus session now.
-
-```
-focus 60
+```bat
+go install github.com/tc-hib/go-winres@latest
+go-winres make --in focus.rc --out cmd\focus\rsrc.syso
+go build -ldflags="-H windowsgui -s -w" -o dist\focus.exe .\cmd\focus
 ```
 
+Without an icon the app builds and runs fine — Windows will use a default icon.
+
 ---
+
+## Dependencies
+
+| Package | Purpose |
+|---------|---------|
+| `github.com/webview/webview_go` | Native WebView2 window for the dashboard UI |
+| `github.com/getlantern/systray` | System tray icon with remaining time |
+
+Both are pulled automatically by `go mod tidy`.
+
+---
+
+## License
+
+MIT
