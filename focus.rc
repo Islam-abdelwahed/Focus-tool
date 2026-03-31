@@ -1,0 +1,10 @@
+// focus.rc — compiled with windres or go-winres
+// Links the UAC manifest and application icon into the .exe
+
+#include "winuser.h"
+
+// Application icon
+1 ICON "assets/focus.ico"
+
+// UAC manifest — ID 1 = CREATEPROCESS_MANIFEST_RESOURCE_ID
+1 24 "focus.manifest"
